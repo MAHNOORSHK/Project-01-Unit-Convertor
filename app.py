@@ -1,10 +1,8 @@
 import streamlit as st
-from forex_python.converter import CurrencyRates
 from pint import UnitRegistry
 
 # Initialize unit registry
 ureg = UnitRegistry()
-currency_rates = CurrencyRates()
 
 # Streamlit UI Enhancements
 st.set_page_config(page_title="Unit Converter", layout="wide")
@@ -45,14 +43,14 @@ menu = st.sidebar.radio("Go to:", ["Home", "Unit Converter", "About", "Contact"]
 if menu == "Home":
     st.markdown("<div class='title'>Unit Converter - Smart. Fast. Accurate</div>", unsafe_allow_html=True)
     st.markdown("<div class='subheader'>Convert Anything, Anytime</div>", unsafe_allow_html=True)
-    st.write("Unit Converter allows you to seamlessly convert units for various categories including length, weight, temperature, currency, time, volume, area, speed, pressure, energy, power, data storage, angle, force, density, and fuel economy.")
+    st.write("Unit Converter allows you to seamlessly convert units for various categories including length, weight, time, volume, area, speed, pressure, energy, power, data storage, angle, force, density, and fuel economy.")
     st.image("images.png", use_container_width=True)
 
 elif menu == "Unit Converter":
     st.markdown("<div class='title'>Unit Converter</div>", unsafe_allow_html=True)
     
     categories = [
-        "Length", "Weight", "Temperature", "Currency", "Time", "Volume", "Area", "Speed", "Pressure", 
+        "Length", "Weight", "Time", "Volume", "Area", "Speed", "Pressure", 
         "Energy", "Power", "Data Storage", "Angle", "Force", "Density", "Fuel Economy"
     ]
     category = st.selectbox("Choose conversion type:", categories)
@@ -63,49 +61,32 @@ elif menu == "Unit Converter":
         except Exception as e:
             return f"Error: {e}"
 
-    if category in ["Length", "Weight", "Time", "Volume", "Area", "Speed", "Pressure", "Energy", "Power", "Data Storage", "Angle", "Force", "Density", "Fuel Economy"]:
-        units_dict = {
-            "Length": ["meter", "kilometer", "mile", "foot", "inch", "centimeter", "yard"],
-            "Weight": ["gram", "kilogram", "pound", "ounce", "ton"],
-            "Time": ["second", "minute", "hour", "day"],
-            "Volume": ["liter", "milliliter", "gallon"],
-            "Area": ["square_meter", "square_foot", "acre"],
-            "Speed": ["kilometer_per_hour", "mile_per_hour", "meter_per_second"],
-            "Pressure": ["pascal", "bar", "psi"],
-            "Energy": ["joule", "calorie", "kilowatt_hour"],
-            "Power": ["watt", "horsepower"],
-            "Data Storage": ["byte", "kilobyte", "megabyte", "gigabyte"],
-            "Angle": ["degree", "radian"],
-            "Force": ["newton", "dyne"],
-            "Density": ["kilogram_per_cubic_meter", "gram_per_cubic_centimeter"],
-            "Fuel Economy": ["kilometer_per_liter", "mile_per_gallon"]
-        }
-        
-        col1, col2 = st.columns(2)
-        from_unit = col1.selectbox("From:", units_dict[category])
-        to_unit = col2.selectbox("To:", units_dict[category])
-        
-        value = st.number_input("Enter value:", min_value=0.0, format="%f")
-        
-        if st.button("Convert"):
-            result = convert_units(value, from_unit, to_unit)
-            st.success(f"{value} {from_unit} = {result} {to_unit}")
+    units_dict = {
+        "Length": ["meter", "kilometer", "mile", "foot", "inch", "centimeter", "yard"],
+        "Weight": ["gram", "kilogram", "pound", "ounce", "ton"],
+        "Time": ["second", "minute", "hour", "day"],
+        "Volume": ["liter", "milliliter", "gallon"],
+        "Area": ["square_meter", "square_foot", "acre"],
+        "Speed": ["kilometer_per_hour", "mile_per_hour", "meter_per_second"],
+        "Pressure": ["pascal", "bar", "psi"],
+        "Energy": ["joule", "calorie", "kilowatt_hour"],
+        "Power": ["watt", "horsepower"],
+        "Data Storage": ["byte", "kilobyte", "megabyte", "gigabyte"],
+        "Angle": ["degree", "radian"],
+        "Force": ["newton", "dyne"],
+        "Density": ["kilogram_per_cubic_meter", "gram_per_cubic_centimeter"],
+        "Fuel Economy": ["kilometer_per_liter", "mile_per_gallon"]
+    }
     
-    elif category == "Currency":
-        currencies = ["USD", "EUR", "GBP", "INR", "JPY", "AUD", "CAD", "CHF", "CNY"]
-        col1, col2 = st.columns(2)
-        from_currency = col1.selectbox("From:", currencies)
-        to_currency = col2.selectbox("To:", currencies)
-        
-        amount = st.number_input("Enter amount:", min_value=0.0, format="%f")
-        
-        if st.button("Convert"):
-            try:
-                rate = currency_rates.get_rate(from_currency, to_currency)
-                converted_amount = amount * rate
-                st.success(f"{amount} {from_currency} = {converted_amount:.2f} {to_currency}")
-            except Exception as e:
-                st.error(f"Conversion error: {e}")
+    col1, col2 = st.columns(2)
+    from_unit = col1.selectbox("From:", units_dict[category])
+    to_unit = col2.selectbox("To:", units_dict[category])
+    
+    value = st.number_input("Enter value:", min_value=0.0, format="%f")
+    
+    if st.button("Convert"):
+        result = convert_units(value, from_unit, to_unit)
+        st.success(f"{value} {from_unit} = {result} {to_unit}")
 
 elif menu == "About":
     st.markdown("<div class='title'>About UniConvert</div>", unsafe_allow_html=True)
